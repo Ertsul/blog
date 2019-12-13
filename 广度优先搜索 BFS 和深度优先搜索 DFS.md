@@ -89,7 +89,7 @@ const BFS = root => {
 
  `DFS`：对每一个可能的分支路径深入到不能再深入为止，且每个节点只访问一次。
 
-上面的树用 `BFS` 顺序就是：`root`  -> `element1 -> `element3` -> `element4` -> `element2`。
+上面的树用 `BFS` 顺序就是：`root`  -> `element1` -> `element3` -> `element4` -> `element2`。
 
 实现思路：
 
