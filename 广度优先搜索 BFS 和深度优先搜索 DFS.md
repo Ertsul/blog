@@ -121,7 +121,7 @@ const DFS = root => {
   if (!Object.keys(root).length) {
     return lists;
   }
-  let stack = []; // 栈，每遇到一个节点就存放进队列
+  let stack = []; // 栈，每遇到一个节点就存放进栈
   stack.push(root);
   while (stack.length) {
     let currentNode = stack.pop(); // 弹出栈顶元素
