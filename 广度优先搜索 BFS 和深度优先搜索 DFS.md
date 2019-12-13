@@ -42,7 +42,7 @@ const vNode = {
 - 设置队列 `queue`，就将**根节点**添加到队列 `queue`；
 - 判断当队列 `queue` 是否为空，不为空则弹出队头节点 `currentNode`；
 - 将队头节点 `currentNode` 添加到结果队列 `lists`；
-- 判断队头节点 `currentNode` 是否有子节点，有则将子节点从左到右依次添加到队列 `queue`；
+- 判断队头节点 `currentNode` 是否有子节点，有则将子节点**从左到右**依次添加到队列 `queue`；
 - 重复步骤2~4。
 
 用 `js` 代码实现如下：（注意：判断条件为队列长度）
@@ -91,7 +91,44 @@ const BFS = root => {
 
 上面的树用 `BFS` 顺序就是：`root`  -> `element1` -> `element3` -> `element4` -> `element2`。
 
-实现思路：
+实现思路1:
+
+- 根节点进栈 `stack`；
+- 判断栈 `stack` 是否为空，判断栈顶元素是否有有子节点，有则将栈顶元素的子节点**从右到左**依次进栈；
+- 弹出栈顶元素，存进 `lists`;
+- 重复2~3；
+
+代码如下：（注意：判断条件为栈长度）
+
+```javascript
+const DFS = root => {
+  if (Object.prototype.toString.call(root) != "[object Object]") {
+    throw new Error("root 类型错误！");
+  }
+  let resLists = []; // 存放 BFS 节点队列
+  if (!Object.keys(root).length) {
+    return lists;
+  }
+  let stack = []; // 栈，每遇到一个节点就存放进队列
+  stack.push(root);
+  while (stack.length) {
+    let currentNode = stack.pop(); // 弹出栈顶元素
+    const hasChild =
+      currentNode.hasOwnProperty("child") && currentNode.child.length; // 判断当前节点是否有子节点
+    if (hasChild) {
+      const childrenNodes = currentNode.child; // 子节点数组
+      for (let i = childrenNodes.length - 1; i >= 0; i--) {
+        const currentChildNode = childrenNodes[i]; // 当前子节点
+        stack.push(currentChildNode); // 添加到队列
+      }
+    }
+    resLists.push(currentNode); // 当前节点存放到 DFS 结果列表
+  }
+  return resLists;
+};
+```
+
+实现思路2：
 
 - 当前节点入栈 `stack`；
 - 判断当前节点是否有子节点；
@@ -146,7 +183,7 @@ const DFS = (currentNode = {}, cache = { lists: [], stack: [] }) => {
   stack.push(currentNode); // 推入栈
   if (hasChild) {
     let len = currentNode.child.length;
-    for (let i = len - 1; i >= 0; i--) { // 注意这里要从右向左循环，因为 stack 是先进后出（最右边的节点是最先访问到然后通过 unshift 添加到数组头部的）
+    for (let i = len - 1; i >= 0; i--) { // 注意这里要从右向左循环，因为 stack 是先进后出
       const currentChildNode = currentNode.child[i]; // 当前子节点
       const {
         lists: newLists,
