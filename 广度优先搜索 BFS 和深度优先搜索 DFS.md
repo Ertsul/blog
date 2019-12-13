@@ -146,7 +146,7 @@ const DFS = (currentNode = {}, cache = { lists: [], stack: [] }) => {
   stack.push(currentNode); // 推入栈
   if (hasChild) {
     let len = currentNode.child.length;
-    for (let i = len - 1; i >= 0; i--) { // 注意这里要从右向左循环，因为 stack 是先进后出
+    for (let i = len - 1; i >= 0; i--) { // 注意这里要从右向左循环，因为 stack 是先进后出（最右边的节点是最先访问到然后通过 unshift 添加到数组头部的）
       const currentChildNode = currentNode.child[i]; // 当前子节点
       const {
         lists: newLists,
