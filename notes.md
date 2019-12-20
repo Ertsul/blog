@@ -68,44 +68,155 @@
 原因：父元素高度坍塌
 
 - 增加空的子元素，添加样式`clear:both;`
-
 - 父元素形成 *BFC*
-
 - 父元素伪类
 
-  ```css
-  .clearfix::after {
-      content: " ";
-      display: block;
-      clear: both;
+```css
+.clearfix::after {
+    content: " ";
+    display: block;
+    clear: both;
+}
+/* 兼容 IE6，IE7 */
+.clearfix {zoom:1;}
+```
+
+### 盒子模型
+
+盒子模型包括：外边距 *margin*、边框 *border*、内边距 *padding* 、内容 *content*。
+
+- 标准盒子模型：`width = content-width`
+- *IE* 盒子模型：`width = border-width + padding-width + content-width`
+
+*box-sizing* ：设置盒子是*标准模型*还是 *IE 模型*。属性有：
+
+- border-box：*IE* 模型
+- padding-box
+- content-box：标准模型
+
+### 各种宽高
+
+- *offsetWidth* 和 *offsetHeight*：元素的宽高，包括：*border + padding + content*。
+- *offsetTop* 和 *offsetLeft*：元素相对于父元素的顶部和左边的距离。
+- *scrollWidth* 和 *scrollHeight*：元素的宽高，包括滚动看不见的部分，包括：*padding*，不包括 *margin* 和 *border*。
+- *scrollTop* 和 *scrollLeft*：元素滚动部分相对于显示区域的顶部和左边的距离。
+- *clientX* 和 *clientY*：相对于浏览器的 *X* 轴和 *Y* 轴的距离。
+- *pageX* 和 *pageY*： 相对于 *document* 的 *X* 轴和 *Y* 轴的距离。
+- *clientWidth* 和 *clientHeight*：元素的宽高，包括：*padding*，不包括 *margin* 和 *border*。
+- *window.innerWidth* 和 *window.innerHeight*：视窗的宽高。
+- *element.getBoundingClientRect()*：用于获取元素的宽高和偏移量。
+
+### new 操作符
+
+- 创建一个空对象
+- 空对象链接到构造函数的原型
+- 执行构造函数，改变 *this* 指向
+- 返回值如果是对象，则返回该对象；否则返回新对象。
+
+```javascript
+function Create(Con, ...arg) {
+    let obj = Object.create(Con.prototype); // 创建空对象；指向构造函数的原型
+    // let obj = {};
+    // obj.__proto__ = Con.prototype;
+    let result = Con.apply(obj, arg); // 改变 this 指向
+    return Object.prototype.toString.call(result) === '[object Object]' ? restul : obj; // 返回值，如果是对象，就返回构造函数，否则返回 obj
+}
+```
+
+### 深复制
+
+```javascript
+function deepCopy(target) {
+	let result = Object.prototype.toString.call(target) === '[object Object]' ? {} : [];
+    for (let key in target) {
+        if (target.hasOwnProperty(key)) {
+            const value = target[key];
+            if (Object.prototype.toString.call(value) === '[object Object]') {
+                result[key] = deepCopy(value);
+            } else {
+                result[key] = value;
+            }
+        }
+    }
+    return result;
+}
+```
+
+### 防抖与节流
+
+#### 防抖 debounce
+
+将高频操作转化为低频操作。
+
+注意：`clearTimeout(timeout)` 并不会使 *timeout* 为 *null*，只会清空定时器。
+
+```javascript
+function debounce(fn, wait, immediate = false) {
+  var timeout, result;
+
+  timeout && clearTimeout(timeout);
+  var debounced = function () {
+    var context = this;
+    var args = arguments;
+
+    if (immediate) { // 事件停止触发后 n 秒，触发事件立刻执行回调
+      var callNow = !timeout;
+      timeout = setTimeout(function () {
+        timeout = null;
+      }, wait)
+      if (callNow) {
+        result = fn.apply(context, args);
+      }
+    } else { // 事件停止触发后，执行回调函数
+      timeout = setTimeout(function () {
+        fn.apply(context, args);
+      }, wait);
+    }
   }
-  /* 兼容 IE6，IE7 */
-  .clearfix {zoom:1;}
-  ```
 
-  ### 盒子模型
+  debounced.cancel = function () {
+    clearTimeout(timeout);
+    timeout = null;
+  }
 
-  盒子模型包括：外边距 *margin*、边框 *border*、内边距 *padding* 、内容 *content*。
+  return debounced;
+}
+```
 
-  - 标准盒子模型：`width = content-width`
-  - *IE* 盒子模型：`width = border-width + padding-width + content-width`
+#### 节流 throttle
 
-  *box-sizing* ：设置盒子是*标准模型*还是 *IE 模型*。属性有：
+ 持续触发事件，每隔一段时间，只执行一次事件 。
 
-  - border-box：*IE* 模型
-  - padding-box
-  - content-box：标准模型
+```javascript
+function (fn, wait) {
+    var previous = 0;
+    
+    return function () {
+        var args = arguments;
+        var context = this;
+        var now = +new Date();
+        if (now - previous > wait) {
+            fn.apply(context, args);
+            previous = now;
+        }
+    }
+}
+```
 
-  ### 各种宽高
+```javascript
+function throttle(f, wait) {
+	var timeout;
+    
+    return function() {
+        var args = arguments;
+        var context = this;
+        if (!timeout) {
+           	timeout = setTimeout(function() {
+                timeout = null;
+                fn.apply(context, args);
+            }, wait)
+        }
+    }
+}
+```
 
-  - *offsetWidth* 和 *offsetHeight*：元素的宽高，包括：*border + padding + content*。
-  - *offsetTop* 和 *offsetLeft*：元素相对于父元素的顶部和左边的距离。
-  - *scrollWidth* 和 *scrollHeight*：元素的宽高，包括滚动看不见的部分，包括：*padding*，不包括 *margin* 和 *border*。
-  - *scrollTop* 和 *scrollLeft*：元素滚动部分相对于可是部分的顶部和左边的距离。
-  - *clientX* 和 *clientY*：相对于浏览器的 *X* 轴和 *Y* 轴的距离。
-  - *pageX* 和 *pageY*： 相对于 *document* 的 *X* 轴和 *Y* 轴的距离。
-  - *clientWidth* 和 *clientHeight*：元素的宽高，包括：*padding*，不包括 *margin* 和 *border*。
-  - *window.innerWidth* 和 *window.innerHeight*：视窗的宽高。
-  - *element.getBoundingClientRect()*：用于获取元素的宽高和偏移量。
-
-  
