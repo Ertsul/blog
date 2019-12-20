@@ -204,14 +204,14 @@ function (fn, wait) {
 ```
 
 ```javascript
-function throttle(f, wait) {
-	var timeout;
-    
+function throttle(fn, wait) {
+    var timeout;
+
     return function() {
         var args = arguments;
         var context = this;
         if (!timeout) {
-           	timeout = setTimeout(function() {
+            timeout = setTimeout(function() {
                 timeout = null;
                 fn.apply(context, args);
             }, wait)
