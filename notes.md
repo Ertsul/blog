@@ -275,3 +275,31 @@ function flattern(target) {
 - 正则：`num1 = num.toString().replace(/(\d)(?=(\d{3})+$)/g, $1 => $1 + ',')`
 
   如：*1234567890*， 匹配的是 *7 890*、*4 567890*，类推。 
+
+### 大小驼峰、中划线转化
+
+#### 中划线转大驼峰
+
+```javascript
+function toBigHump(str) {
+  return str.replace(/\-([a-z])/g, ($1, $2) => $2.toUpperCase());
+}
+```
+
+#### 中划线转小驼峰
+
+```javascript
+function toSmallHump(str) {
+  return str.replace(/[^]\-([a-z])/g, ($1, $2) =>  $2.toUpperCase()).split('-')[1];
+}
+```
+
+#### 驼峰转中划线
+
+```javascript
+function toLine(str) {
+  let res = str.replace(/([A-Z])(?=.*)/g, $1 => "-" + $1.toLowerCase());
+  return res[0] == "-" ? res.slice(1) : res;
+}
+```
+
