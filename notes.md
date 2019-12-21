@@ -267,3 +267,11 @@ function flattern(target) {
 #### AMD/CMD
 
 - 异步加载
+
+### 数字添加千位符
+
+- `num.toLocaleString()`
+
+- 正则：`num1 = num.toString().replace(/(\d)(?=(\d{3})+$)/g, $1 => $1 + ',')`
+
+  如：*1234567890*， 匹配的是 *7 890*、*4 567890*，类推。 
