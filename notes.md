@@ -224,3 +224,30 @@ function throttle(fn, wait) {
 }
 ```
 
+### 数组扁平化
+
+- 递归
+
+```javascript
+function flattern(target) {
+	let result = [];
+    for (let idx in target) {
+        const value = target[idx];
+        if(Object.prototype.toString.call(value) === '[object Array]') {
+           result = [...result, flattern(value)];
+        } else {
+           result = [...result, value]; 
+        }
+    }
+    return result;
+}
+```
+
+- reduce
+
+```javascript
+function flattern(target) {
+    return target.reduce((prev, next) => prev.concat(Array.isArray(next) ? flattern(next) : next), []);
+}
+```
+
