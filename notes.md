@@ -190,7 +190,7 @@ function debounce(fn, wait, immediate = false) {
 - 时间戳
 
 ```javascript
-function (fn, wait) {
+function throttle(fn, wait) {
     var previous = 0;
     
     return function () {
