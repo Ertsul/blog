@@ -368,6 +368,21 @@ Function.prototype.myApply = function(context) {
 
 `bindFn.myBind(bindObj, 'iuiu')();`
 
+- 获取执行函数 *bindFn*。
+
+- 获取 *bindFn* 的参数。
+
+- 返回函数 *F*。
+
+- 判断函数 *F* 的执行方式：
+
+  - *new* 方式：直接 *new F()* 函数。
+  - 直接执行函数。
+
+- 返回函数执行结果。
+
+  
+
 ```javascript
 Function.prototype.myBind = function(context) {
 	// bindFn.myBind(bindObj, 'iuiu')();
@@ -385,21 +400,4 @@ Function.prototype.myBind = function(context) {
 }
 ```
 
-
-
-- 获取执行函数 *bindFn*。
-
-- 获取 *bindFn* 的参数。
-
-- 返回函数 *F*。
-
-- 判断函数 *F* 的执行方式：
-
-  - *new* 方式：直接 *new F()* 函数。
-  - 直接执行函数。
-
-- 返回函数执行结果。
-
-  
-
-   
+ 
