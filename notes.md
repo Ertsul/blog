@@ -333,7 +333,7 @@ function toLine(str) {
 - 执行函数并返回结果。
 
 ```javascript
-Function.rptotype.myCall = function(context) {
+Function.prototype.myCall = function(context) {
 	// callFn.myCall(callObj, 'iuiu');
     context = context || window; // 被绑定的对象 => callObj
     context.fn = this; // this 指向（待执行的函数） => callFn
