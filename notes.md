@@ -123,6 +123,16 @@ function Create(Con, ...arg) {
 }
 ```
 
+```javascript
+function Create() {
+    let obj = new Object(); // 新建对象
+    let Con = [].shift.call(arguments); // 获取第一个实参，构造函数
+    obj.__proto__ = Con.prototype; // 更改原型链
+    let result = Con.apply(obj, arg); // 修改 this 指向
+    return Object.prototype.toString.call(result) === '[object Object]' ? restul : obj;
+}
+```
+
 ### 深复制
 
 ```javascript
@@ -258,11 +268,14 @@ function flattern(target) {
 - 同步加载：*CommonJs* 主要用于服务器，比如：*node.js*，文件模块的读取主要在硬件磁盘；而浏览器更多是基于网络请求。
 - 值的拷贝：模块内部与导出的值不相影响。
 - 运行时加载：*CommonJs* 会先将模块整个引进，然后生成一个对象，从这个对象中取值。
+- 支持动态导入，即：`require(${path}/xx.js)`。
 
 #### ES6
 
 - 值的引用：*JS* 引擎对脚本进行静态解析的时候，遇到 *import*，会先生成一个只读引用；在脚本真正执行的时候，再根据这个只读引用，到被加载的模块中去取值。
 - 编译时加载：在 *import* 的时候可以指定输出值，而不是加载整个模块。
+- 不支持动态导入。
+- 会编译成 `CommanJs`执行。
 
 #### AMD/CMD
 
@@ -300,6 +313,54 @@ function toSmallHump(str) {
 function toLine(str) {
   let res = str.replace(/([A-Z])(?=.*)/g, $1 => "-" + $1.toLowerCase());
   return res[0] == "-" ? res.slice(1) : res;
+}
+```
+
+### 获取时间戳
+
+- `Date.parse(new Date())`
+- `+new Date()`
+
+### 模拟 call 和 apply
+
+#### call
+
+`callFn.myCall(callObj, 'iuiu');`
+
+- 获取被绑定的对象 *callObj*。
+- 获取绑定的对象 *callFn*。
+- 获取函数参数。
+- 执行函数并返回结果。
+
+```javascript
+Function.rptotype.myCall = function(context) {
+	// callFn.myCall(callObj, 'iuiu');
+    context = context || window; // 被绑定的对象 => callObj
+    context.fn = this; // this 指向（待执行的函数） => callFn
+    const args = [].slice.call(arguments, 1); // 获取函数参数
+    const result = context.fn(...args); // 函数返回值，此时 fn/getName 的 this 已经指向 callObj
+    delete context.fn;
+    return result;
+}
+```
+
+#### apply
+
+`applyFn.myApply(applyObj, ['iuiu']);`
+
+- 获取被绑定的对象 *applyObj*。
+- 获取绑定的对象 *applyFn*。
+- 判断是否有函数参数数组，有则展开。
+- 执行函数并返回结果。
+
+```javascript
+Function.prototype.myApply = function(context) {
+    // applyFn.myApply(applyObj, ['iuiu']);
+    context = context || window; // 被绑定的对象 => applyFn
+    context.fn = this; // this 指向（待执行的函数） => callFn
+    const result = arguments[1] ? context.fn(...arguments[1]) : context.fn(); // 判断是否有函数参数数组
+    delete context.fn;
+    return result;
 }
 ```
 
