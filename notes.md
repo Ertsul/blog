@@ -321,14 +321,14 @@ function toLine(str) {
 - `Date.parse(new Date())`
 - `+new Date()`
 
-### 模拟 call 和 apply
+### 模拟 call 、apply 和 bind
 
 #### call
 
 `callFn.myCall(callObj, 'iuiu');`
 
 - 获取被绑定的对象 *callObj*。
-- 获取绑定的对象 *callFn*。
+- 获取执行函数 *callFn*。
 - 获取函数参数。
 - 执行函数并返回结果。
 
@@ -349,7 +349,7 @@ Function.rptotype.myCall = function(context) {
 `applyFn.myApply(applyObj, ['iuiu']);`
 
 - 获取被绑定的对象 *applyObj*。
-- 获取绑定的对象 *applyFn*。
+- 获取执行函数 *applyFn*。
 - 判断是否有函数参数数组，有则展开。
 - 执行函数并返回结果。
 
@@ -364,3 +364,42 @@ Function.prototype.myApply = function(context) {
 }
 ```
 
+#### bind
+
+`bindFn.myBind(bindObj, 'iuiu')();`
+
+```javascript
+Function.prototype.myBind = function(context) {
+	// bindFn.myBind(bindObj, 'iuiu')();
+    if(typeof this !== 'function') {
+        throw new TypeError('TypeError');
+    }
+    var _this = this;
+    var args = [].slice.call(arguments, 1); // 获取 bindFn 函数参数
+    return function F() { // 返回函数
+        if(this instanceof F) { // new F() 情况
+           return new _this(...args, ...arguments); // args 为外层参数，argumente 为内层函数 F 的参数
+        }
+        return _this.apply(context, [...args, ...arguments]); // 执行函数
+    }
+}
+```
+
+
+
+- 获取执行函数 *bindFn*。
+
+- 获取 *bindFn* 的参数。
+
+- 返回函数 *F*。
+
+- 判断函数 *F* 的执行方式：
+
+  - *new* 方式：直接 *new F()* 函数。
+  - 直接执行函数。
+
+- 返回函数执行结果。
+
+  
+
+   
