@@ -244,7 +244,7 @@ function flattern(target) {
     for (let idx in target) {
         const value = target[idx];
         if(Object.prototype.toString.call(value) === '[object Array]') {
-           result = [...result, flattern(value)];
+           result = [...result, ...flattern(value)];
         } else {
            result = [...result, value]; 
         }
