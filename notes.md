@@ -400,4 +400,47 @@ Function.prototype.myBind = function(context) {
 }
 ```
 
- 
+###  性能优化
+
+#### html
+
+- 公共代码抽离成组件
+- 减少 *reflow*
+
+#### css
+
+- 嵌套不要超过 *3* 层（构建 *CSSOM* 树的过程会阻塞，耗性能）
+- *css* 文件放头部 
+
+##### js
+
+- 放 *body* 底部（*js* 文件执行会阻塞渲染）
+- *defer / async*
+- 复杂计算使用 *webworker*
+
+#### 图片
+
+- 压缩图片
+- 小图采用 *base64*
+- 雪碧图
+- 图片懒加载
+- 采用 *WebP* 图片格式
+- 对于移动端，可以先计算设备的宽高，然后再去请求对应的图片，没必要请求原图
+
+#### 网络
+
+- 缓存
+  - 强缓存：*Expires / Cache-control*
+  - 协商缓存：*Last-Modified / If-Modified-Since*
+- *DNS* 预解析： `<link rel="dns-prefetch" href="//xxx.cn" />`
+- 预加载：`<link rel="preload" href="http://xxx.com" />`
+
+#### webpack
+
+- *tree-shaking*
+- 生产模式压缩代码
+
+
+
+#### 
+
