@@ -97,7 +97,7 @@ class Watcher{
 
 #### 模拟实现
 
-- 添加更新 *DOM* 节点内容回调。
+- 添加更新 *DOM* 节点内容回调函数。
 
 ```javascript
 function update(value) {
