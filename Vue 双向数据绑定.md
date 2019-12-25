@@ -15,7 +15,7 @@
 
 数据劫持是使用 `Object.defineProperty()`进行实现的。通过遍历数据对象 *data* 的所有属性，设置每个属性的 *getter* 和 *setter* 。
 
-- 添加 *observe* 函数。作用是通过该函数获取单个对象的所有属性，并调用 *defineReative* 函数设置 *getter* 和 *setter*。
+- 添加 *observe* 函数。作用是通过该函数获取当前对象的所有属性，并调用 *defineReative* 函数设置 *getter* 和 *setter*。
 
 ```javascript
 function observe(obj) {
