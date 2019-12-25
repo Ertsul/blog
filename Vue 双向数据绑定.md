@@ -97,6 +97,12 @@ class Watcher{
 
 #### 模拟实现
 
+- *html* 页面添加标签并进行数据绑定。
+
+```html
+<div class="container">{{name}}</div>
+```
+
 - 添加更新 *DOM* 节点内容回调函数。
 
 ```javascript
