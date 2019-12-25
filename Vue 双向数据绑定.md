@@ -35,7 +35,7 @@ function observe(obj) {
 ```javascript
 function defineReative(obj, key, val) {
     observe(val); // 递归
-    let dp = new Dep(); // 实例化一个依赖收集对象，用于添加订阅者到订阅者列表
+    let dp = new Dep(); // 实例化一个依赖收集对象，用于添加订阅者到订阅者列表和通知订阅者更新
     Object.defineProperty(obj, key, {
         configurable: true,
         enumerable: true,
