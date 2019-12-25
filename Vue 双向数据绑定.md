@@ -73,7 +73,7 @@ class Dep {
 }
 ```
 
-- 设置全局 `Dep.target = null`。用于判断是否有订阅者 Watcher 触发 *getter* ，有的话添加到订阅者列表。
+- 设置全局 `Dep.target = null`。用于判断是否有订阅者 *Watcher* 触发 *getter* ，有的话添加到订阅者列表。
 
 #### 订阅者
 
