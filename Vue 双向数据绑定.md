@@ -6,7 +6,7 @@
 
 ![image.png](https://upload-images.jianshu.io/upload_images/659084-587c891bf6c3f81e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-- 解析到页面中数据绑定，通过触发 *getter* 新增一个订阅者/观察者 *Watcher* 到订阅列表 *subs*。
+- 解析到页面中数据绑定，通过触发 *getter* 新增一个订阅者/观察者 *Watcher* 到订阅者列表 *subs*。
 - 数据改动，通过触发 *setter* 通知所有的订阅者。 
 
 ### 实现
