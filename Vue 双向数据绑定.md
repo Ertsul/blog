@@ -2,7 +2,7 @@
 
 ### 原理
 
- *Vue* 的双向数据绑定是使用**发布订阅者模式**、**数据劫持**和`Object.defineProperty()`实现。（*Vue 3.0* 改用 *Proxy*）核心原理如下图所示：
+ *Vue* 的双向数据绑定是使用**发布订阅者模式**、**数据劫持**和`Object.defineProperty()`（*Vue 3.0* 改用 *Proxy*）实现。核心原理如下图所示：
 
 ![image.png](https://upload-images.jianshu.io/upload_images/659084-587c891bf6c3f81e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
