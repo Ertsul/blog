@@ -440,7 +440,7 @@ Function.prototype.myBind = function(context) {
 - *tree-shaking*
 - 生产模式压缩代码
 
-### 常用状态码
+### http 常用状态码
 
 - 2xx：消息
   - 200：请求成功
