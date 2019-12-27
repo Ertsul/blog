@@ -448,7 +448,7 @@ Function.prototype.myBind = function(context) {
   - 301：永久重定向
   - 302：临时重定向。请求时会把 *POST* 改为 *GET*。
   - 304：自上次请求，未修改的文件。
-  - 307：临时重定向。请求时不 ![img](file:///C:\Users\pc\AppData\Local\Temp\qqpyimg1577429195.gif)  会把 *POST* 改为 *GET*。
+  - 307：临时重定向。请求时不会把 *POST* 改为 *GET*。
 - 4xx：客户端
   - 400：错误请求
   - 401：用户身份授权
