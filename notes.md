@@ -457,6 +457,7 @@ Function.prototype.myBind = function(context) {
   - 500：服务端的未知错误
   - 502：网关错误
   - 503：服务暂时无法使用
+  - 504：网关超时
 
 
 
