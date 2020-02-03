@@ -453,6 +453,7 @@ Function.prototype.myBind = function(context) {
   - 400：错误请求
   - 401：用户身份授权
   - 403：拒绝被拒绝
+  - 404：Not Found
 - 5xx：服务端
   - 500：服务端的未知错误
   - 502：网关错误
