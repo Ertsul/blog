@@ -460,7 +460,45 @@ Function.prototype.myBind = function(context) {
   - 503：服务暂时无法使用
   - 504：网关超时
 
+### 模拟实现 Promise.All
 
+```javascript
+let p1 = new Promise((resolve, reject) => {
+  console.log(1);
+  resolve();
+});
+let p2 = new Promise((resolve, reject) => {
+  console.log(2);
+  resolve();
+});
+// Promise.all([p1, p2]).then(res => {
+//   console.log(3);
+// })
 
-#### 
+function pAll(pList) {
+  return new Promise((resolve, reject) => {
+    let count = 0; // promise 计数
+    for (let i = 0; i < pList.length; i++) {
+      const pItem = pList[i];
+      pItem
+        .then(res => {
+          if (count++ === pList.length - 1) {
+            resolve();
+          }
+        })
+        .catch(err => {
+          reject(err);
+        });
+    }
+  });
+}
+
+pAll([p1, p2])
+  .then(res => {
+    console.log(3);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
 
