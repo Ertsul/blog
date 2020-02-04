@@ -10,7 +10,7 @@ const vNode = {
   child: [
     {
       node: "element1",
-      chlid: [
+      child: [
         {
           node: "element3"
         },
