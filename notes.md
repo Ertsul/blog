@@ -402,19 +402,16 @@ Function.prototype.myBind = function(context) {
 
 ###  性能优化
 
-#### html
-
-- 公共代码抽离成组件
-- 减少 *reflow*
-
 #### css
 
 - 嵌套不要超过 *3* 层（构建 *CSSOM* 树的过程会阻塞，耗性能）
-- *css* 文件放头部 
+- 在 *html* 文件中 *css* 文件放头部 
+- 减少 *reflow* 重绘
+- *translate* 代替 *position*
 
 ##### js
 
-- 放 *body* 底部（*js* 文件执行会阻塞渲染）
+- 在 *html*  文件中放 *body* 底部（*js* 文件执行会阻塞渲染）
 - *defer / async*
 - 复杂计算使用 *webworker*
 
@@ -431,14 +428,21 @@ Function.prototype.myBind = function(context) {
 
 - 缓存
   - 强缓存：*Expires / Cache-control*
-  - 协商缓存：*Last-Modified / If-Modified-Since*
+  - 协商缓存：*Last-Modified / If-Modified-Since*， *ETag* / *If-None-Match*
 - *DNS* 预解析： `<link rel="dns-prefetch" href="//xxx.cn" />`
 - 预加载：`<link rel="preload" href="http://xxx.com" />`
+- 静态资源尽量放 *CDN*
 
 #### webpack
 
 - *tree-shaking*
 - 生产模式压缩代码
+
+#### 其他
+
+- 公共代码抽成工具或者组件
+
+- 小程序分包机制
 
 ### http 常用状态码
 
@@ -501,4 +505,8 @@ pAll([p1, p2])
     console.log(err);
   });
 ```
+
+### 对于 Vue  渐进式框架的理解
+
+*Vue* 是一个 *MVVM* 框架，视图 *View* 和模型 *Model* 通过 *VM* 进行连接，可以说 *Vue* 是一个视图模板引擎。在视图模板引擎（声明式渲染）的基础上，我们可以添加组件系统、路由、状态机等，并且各个部件可以独立使用，不需要全部整合在一起才能使用。每个框架都有自己的特点，对于开发者都有一定要求，这些要求成为主张。因此，渐进式的含义就是主张最少。
 
