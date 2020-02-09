@@ -679,3 +679,27 @@ function quickSort(arr) {
 - 拆包：SplitChunkPlugin
 - 提取公共代码：commonChunk
 
+### instanceof
+
+```javascript
+function _instanceof(left, right) {
+    let prototype = right.prototype;
+    left = left.__proto__;
+    while(left){
+        if (left === null) {
+            return false
+        }
+        if (left === prototype) {
+            return true;
+        }
+        left = left.__proto__;
+   	}
+}
+```
+
+
+
+
+
+
+
