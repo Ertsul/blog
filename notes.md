@@ -408,10 +408,12 @@ Function.prototype.myBind = function(context) {
 - 在 *html* 文件中 *css* 文件放头部 
 - 减少 *reflow* 重绘
 - *translate* 代替 *position*
+- 用 `<link>` 替代 *@import* 
 
 ##### js
 
 - 在 *html*  文件中放 *body* 底部（*js* 文件执行会阻塞渲染）
+- 减少 DOM 操作
 - *defer / async*
 - 复杂计算使用 *webworker*
 
@@ -509,4 +511,171 @@ pAll([p1, p2])
 ### 对于 Vue  渐进式框架的理解
 
 *Vue* 是一个 *MVVM* 框架，视图 *View* 和模型 *Model* 通过 *VM* 进行连接，可以说 *Vue* 是一个视图模板引擎。在视图模板引擎（声明式渲染）的基础上，我们可以添加组件系统、路由、状态机等，并且各个部件可以独立使用，不需要全部整合在一起才能使用。每个框架都有自己的特点，对于开发者都有一定要求，这些要求成为主张。因此，渐进式的含义就是主张最少。
+
+### Proimse 串行执行
+
+```javascript
+const p1 = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log(1);
+      resolve();
+    }, 3000)
+  })
+}
+
+const p2 = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log(2);
+      resolve();
+    }, 4000)
+  })
+}
+
+const p3 = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log(3);
+      resolve();
+    }, 1000)
+  })
+}
+
+const pArr = [p1, p2, p3];
+```
+
+- reduce：通过 *then* 进行链式串行调用。
+
+```javascript
+let res = pArr.reduce((prev, cur) => {
+    return prev.then(() => cur())
+}, Promise.reolve())
+```
+
+- 循环 + async / await 
+
+```javascript
+(async function() {
+    let pRes = null;
+	for (let i = 0, len = pArr.length; i < len; i++) {
+    	await pRes = pArr[i]();
+	}    
+})
+```
+
+- 跟第一种一样，用普通循环替代 reduce
+
+```javascript
+let pRes = Promise.resolve();
+for (const i of pArr) {
+    pRes = pRes.then(() => pArr[i]())
+}
+```
+
+### 从浏览器输入 URL 到页面显示
+
+1. 浏览器输入 URL
+2. 判断浏览器是否有缓存
+   - 无缓存：直接请求
+   - 有缓存：通过判断强缓存（Expires / Cache-Control）或协商缓存（If-Modified / If-Modified-Since 或者 ETag / If-None-Match）
+3. 浏览器解析获取协议、主机、端口、路径。
+4. 浏览器获取主机 IP 地址
+   - 浏览器缓存
+   - 主机缓存
+   - Host 文件
+   - ISP DNS 查询
+   - DNS 递归查询
+5. 浏览器打开 Socket 与主机 IP 建立连接，通过三次握手建立连接
+   - SYC = 1, Seq = X
+   - ACK = X + 1, Seq = Y
+   - ACK = Y + 1, Seq = Z
+6. 服务器收到请求之后，转接到服务处理程序
+7. 服务器判断是否有缓存判断，返回 304 等
+8. 服务器返回响应报文
+9. 通过四次挥手关闭连接
+10. 浏览器收到资源，判断资源是否需要缓存，判断是否需要解码
+11. 通过资源类型进行不同的处理
+12. 解析 HTML 生成 DOM 
+13. 解析 CSS 生成 CSSOM 
+14. 通过 DOM 和 CSSOM 生成渲染树
+15. 执行 js 代码
+16. 显示页面
+
+### Ajax
+
+```javascript
+const xhr = new XMLHttpRequest();
+xhr.open('get', url, true);
+xhr.send();
+xhr.onreadystatechange = function() {
+    if (xhr.readystate == 4) {
+        if (xhr.status = 200) {
+ 			// ...           
+        } else {
+            // ...
+        }
+     }   
+}
+```
+
+### 排序
+
+- 冒泡排序
+
+```javascript
+function bunbleSort(arr) {
+  if (!Array.isArray(arr)) {
+    return;
+  }
+  for (let i = arr.length - 1; i >= 0; i--) {
+    for (let j = 0; j <= i; j++) {
+      if (arr[i] <= arr[j]) {
+        const temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+      }
+    }
+  }
+
+  return arr;
+}
+```
+
+- 快速排序
+
+```javascript
+function quickSort(arr) {
+  if (!Array.isArray(arr)) {
+    return;
+  }
+  if (arr.length <= 1) {
+    return arr;    // 返回空数组
+  }
+  const middleIndex = Math.round(arr.length / 2);
+  const middleItem = arr.splice(middleIndex, 1)[0];
+  let leftArr = [];
+  let rightArr = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    const item = arr[i];
+    if (item < middleItem) {
+      leftArr.push(item);
+    } else {
+      rightArr.push(item);
+    }
+  }
+  return [...quickSort(leftArr), middleItem, ...quickSort(rightArr)];
+}
+```
+
+### webpack  优化及其插件
+
+- 减少编译体积：html-webpack-plugin，IgnorePlugin，babel-plugin-transform-runtime
+- 并行打包：happypack
+- 缓存：cache-loader，UglifyJsWepackPlugin 开启缓存，babel-loader 开启缓存
+- 性能：tree-shaking，Scope-hosting
+- 按需引进静态资源：require.ensure
+- 拆包：SplitChunkPlugin
+- 提取公共代码：commonChunk
 
