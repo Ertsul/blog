@@ -27,7 +27,7 @@ svg sprite 不跟传统图片雪碧图一样是许多小图的集合。它是基
 
 svg sprite 更加方便的是，可以通过 css 属性`fill:color;`直接更改颜色：
 
-![image-20200612102845579](C:\Users\Lustre\AppData\Roaming\Typora\typora-user-images\image-20200728150102202.png)
+![image-20200728150102202.png](https://i.loli.net/2020/07/28/YWsk1M6zjIeoymd.png)
 
 ### 结合 vue + webpack 使用
 
@@ -137,7 +137,7 @@ export default {
 
 效果：
 
-![image-20200728144255915](C:\Users\Lustre\AppData\Roaming\Typora\typora-user-images\image-20200728144255915.png)
+![image-20200728144255915.png](https://i.loli.net/2020/07/28/TBYh2iFx8lXyUbs.png)
 
 2. 抽离 sprite.svg 文件为独立的文件，一般用户生产环境：
 
@@ -176,7 +176,7 @@ config.plugin("svg-sprite").use(require("svg-sprite-loader/plugin")); // 抽离 
 
 其他不变，效果如下：
 
-![image-20200728150200223](C:\Users\Lustre\AppData\Roaming\Typora\typora-user-images\image-20200728150200223.png)
+![image-20200728150200223.png](https://i.loli.net/2020/07/28/BNazUW2mGO3vd6F.png)
 
 思考：怎么通过环境变量将生产模式和开发环境结合起来？
 
@@ -227,11 +227,11 @@ xlinkHref() {
 
 用了  svg-sprite-loader 之后，不能通过 CSS 属性 `fill:color;`更改颜色。是因为这个 loader 默认给 svg 添加了 `fill:none;` 属性，导致更改不了。
 
-![image-20200728155235199](C:\Users\Lustre\AppData\Roaming\Typora\typora-user-images\image-20200728155235199.png)
+![image-20200728155235199.png](https://i.loli.net/2020/07/28/91batqBTO4pK3YE.png)
 
 解决办法：通过`svgo-loader` 解决。通过这个 loader 我们可以添加很多插件，这些插件是基于 `svgo`，`svgo` 在安装 `svgo-loader` 的时候自动安装了。下面是 `svgo` 的截图：
 
-![image-20200728155531489](C:\Users\Lustre\AppData\Roaming\Typora\typora-user-images\image-20200728155531489.png)
+![image-20200728155531489.png](https://i.loli.net/2020/07/28/ot4XUBhmOurly9E.png)
 
 回归正题，修改 vue.config.js 配置，去除默认加上的 `fill:none;` 属性：
 
