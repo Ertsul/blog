@@ -199,7 +199,7 @@ class User {
 
 ### 11.延迟加载库
 
-![image-20210122170901165.png](https://i.loli.net/2021/03/11/41H8cOWdCIlamjG.png)
+![image-20210122170901165.png](https://i.loli.net/2021/03/11/jn18W4s9T2olSci.png)
 
 ### 12.获取屏幕宽高
 
