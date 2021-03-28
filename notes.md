@@ -671,7 +671,7 @@ function quickSort(arr) {
 
 ### webpack  优化及其插件
 
-- 减少编译体积：html-webpack-plugin，IgnorePlugin，babel-plugin-transform-runtime
+- 减少编译体积：html-webpack-plugin，IgnorePlugin，babel-plugin-transform-runtime，mini-css-extract-plugin，clean-webpack-plugin，copy-webpack-plugin
 - 并行打包：happypack
 - 缓存：cache-loader，UglifyJsWepackPlugin 开启缓存，babel-loader 开启缓存
 - 性能：tree-shaking，Scope-hosting
