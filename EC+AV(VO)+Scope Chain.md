@@ -130,7 +130,7 @@ ECStack = [
 ];
 ```
 
-- 将`[[scope]]`保存的作用域复制到 VO 的中进行保存；
+- 将`[[scope]]`保存的作用域复制到函数执行上下文 EC 中进行保存；
 
 ```javascript
 const fnContext = {
