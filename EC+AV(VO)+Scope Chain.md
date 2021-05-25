@@ -144,11 +144,12 @@ const fnContext = {
 const fnContext = {
 	Scope: fn.[[scope]],
     fnVO: {
-	arguments: {
-        length: 0
-    },
-    a: undefined,
-    b: undefined
+        arguments: {
+            length: 0
+        },
+        a: undefined,
+        b: undefined
+    }
 }
 ```
 
