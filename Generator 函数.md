@@ -98,7 +98,7 @@ gen.next().value.then((res1) => {
 
 参考`async/await`的使用：
 
-- `async`函数返回值是一个`Promise `；
+- `async`函数返回值是一个`Promise`；
 - 异步函数同步化使用；
 
 ```js
