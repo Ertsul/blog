@@ -23,9 +23,9 @@ console.log('yeild 2', gen.next()) // yeild 2 { value: 2, done: false }
 console.log('yeild 3', gen.next()) // yeild 3 { value: 3, done: false }
 ```
 
-🌰2，next 方法传参：
+🌰2，`next`方法传参：
 
-向 next 方法传参会将实参的值作为上次 yield 的结果。
+向`next`方法传参会将实参的值作为上次`yield`的结果。
 
 ```js
 // Genetator 函数定义
@@ -73,9 +73,9 @@ console.log('yeild 2', gen.next()) // yeild 2 { value: Promise { <pending> }, do
 console.log('yeild 3', gen.next()) // yeild 3 { value: Promise { <pending> }, done: false }
 ```
 
-由于每个`yield`的结果都是一个 Promse，所以如果要输出每次 yield 的结果，需要进行修改。
+由于每个`yield`的结果都是一个`Promse`，所以如果要输出每次 `yield `的结果，需要进行修改。
 
-修改下，打印出每次 Promise 的结果：
+修改下，打印出每次`Promise`的结果：
 
 ```js
 const gen = genFn()
