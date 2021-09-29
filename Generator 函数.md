@@ -18,9 +18,9 @@ function* genFn() {
 }
 const gen = genFn()
 
-console.log('yeild 1', gen.next()) // yeild 1 { value: 1, done: false }
-console.log('yeild 2', gen.next()) // yeild 2 { value: 2, done: false }
-console.log('yeild 3', gen.next()) // yeild 3 { value: 3, done: false }
+console.log('yield 1', gen.next()) // yield 1 { value: 1, done: false }
+console.log('yield 2', gen.next()) // yield 2 { value: 2, done: false }
+console.log('yield 3', gen.next()) // yield 3 { value: 3, done: false }
 ```
 
 🌰2，`next`方法传参：
