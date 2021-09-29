@@ -88,8 +88,91 @@ gen.next().value.then((res1) => {
 
     gen.next(res2).value.then((res3) => {
       console.log('res3', res3) // 4
+      return res03
     })
   })
 })
+```
+
+上面这样有点 callback hell 的感觉，改造下，解决回调地狱的问题。
+
+先来看下`async/await`的使用：
+
+- `async`函数返回值是一个`Promise `
+- 异步函数同步化
+
+```js
+// 异步函数
+function timer(num) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      return resolve(num + 1)
+    }, 10)
+  })
+}
+
+async function fn() {
+  const res01 = await timer(1)
+  const res02 = await timer(res01)
+  const res03 = await timer(res02)
+
+  return res03
+}
+
+fn().then((res) => console.log(res))
+```
+
+将`Generator`转化为类似`async/await`格式：
+
+```js
+function generator2async(generatorFn) {
+  return function () {
+    const gn = generatorFn.apply(this, arguments)
+    return new Promise((resolve, reject) => {
+      function exec(arg) {
+        let res
+        try {
+          res = gn.next(arg)
+        } catch (error) {
+          return reject(error)
+        }
+        const { value, done } = res
+        // 遍历器执行结束
+        if (done) {
+          return resolve(value)
+        }
+        return Promise.resolve(value)
+          .then((val) => exec(val))
+          .catch((err) => {
+            // console.log(err)
+            return reject(err)
+          })
+      }
+      exec() // 第一次执行
+    })
+  }
+}
+
+// 异步函数
+function timer(num) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      return resolve(num + 1)
+    }, 10)
+  })
+}
+
+// Genetator 函数定义
+function* genFn() {
+  const res01 = yield timer(1)
+  const res02 = yield timer(res01)
+  const res03 = yield timer(res02)
+
+  return res03
+}
+
+const aysncedFn = generator2async(genFn)
+
+aysncedFn().then((res) => console.log(res)) // 4
 ```
 
