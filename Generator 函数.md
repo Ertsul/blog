@@ -68,12 +68,12 @@ function* genFn() {
 
 const gen = genFn()
 
-console.log('yeild 1', gen.next()) // yeild 1 { value: Promise { <pending> }, done: false }
-console.log('yeild 2', gen.next()) // yeild 2 { value: Promise { <pending> }, done: false }
-console.log('yeild 3', gen.next()) // yeild 3 { value: Promise { <pending> }, done: false }
+console.log('yield 1', gen.next()) // yield 1 { value: Promise { <pending> }, done: false }
+console.log('yield 2', gen.next()) // yield 2 { value: Promise { <pending> }, done: false }
+console.log('yield 3', gen.next()) // yield 3 { value: Promise { <pending> }, done: false }
 ```
 
-由于每个`yield`的结果都是一个`Promse`，所以如果要输出每次 `yield `的结果，需要进行修改。
+由于每个`yield`的结果都是一个`Promise`，所以如果要输出每次 `yield `的结果，需要进行修改。
 
 修改下，打印出每次`Promise`的结果：
 
@@ -96,10 +96,10 @@ gen.next().value.then((res1) => {
 
 上面这样有点 callback hell 的感觉，改造下，解决回调地狱的问题。
 
-先来看下`async/await`的使用：
+参考`async/await`的使用：
 
-- `async`函数返回值是一个`Promise `
-- 异步函数同步化
+- `async`函数返回值是一个`Promise `；
+- 异步函数同步化使用；
 
 ```js
 // 异步函数
@@ -122,7 +122,7 @@ async function fn() {
 fn().then((res) => console.log(res))
 ```
 
-将`Generator`转化为类似`async/await`格式：
+将`Generator`函数转化为类似`async/await`格式：
 
 ```js
 function generator2async(generatorFn) {
@@ -142,7 +142,7 @@ function generator2async(generatorFn) {
           return resolve(value)
         }
         return Promise.resolve(value)
-          .then((val) => exec(val))
+          .then((val) => exec(val)) // 执行下一次
           .catch((err) => {
             // console.log(err)
             return reject(err)
