@@ -4,7 +4,7 @@
 
 这几个函数的最主要作用就是：**改变 this 指向**。
 
-基于这个作用，可以延伸出以下的功能：
+基于这个作用，可以延伸出很多额外的作用：
 
 - 合并数组
 
@@ -55,10 +55,10 @@ console.log(sum) // 3
 
 call 和 apply 主要区别在于传递参数方式不同：
 
-- call：多个参数列表
+- call：多个参数的列表
 - apply：一个包含多个参数的数组
 
-bind 跟 call/apply 不同点主要在于：返回值是一个函数。
+bind 跟 call/apply 不同点主要在于：bind 返回值是一个函数。
 
 ### 模拟实现
 
@@ -66,20 +66,20 @@ bind 跟 call/apply 不同点主要在于：返回值是一个函数。
 
 ```js
 // es3
-Function.prototype.call1 = function(context) {
+Function.prototype.call1 = function (context) {
   context = context || window // 获取目标绑定对象
   context.fn = this // 执行函数
   // 获取函数参数
   var args = []
-  for (var i = 0; i < arguments.length; i ++) {
-    args.push('arguments[' + i +']')
+  for (var i = 1; i < arguments.length; i++) {
+    args.push('arguments[' + i + ']')
   }
-  var result = eval(context.fn('' + args + '')) // 执行函数
+  var result = eval('context.fn(' + args + ')') // 执行函数
   delete context.fn
   return result
 }
 // es6
-Function.prototype.call2 = function(context, ...args) {
+Function.prototype.call2 = function (context, ...args) {
   context = context || window // 获取目标绑定对象
   context.fn = this // 执行函数
   const result = context.fn(...args) // 执行函数
@@ -105,13 +105,13 @@ Function.prototype.apply1 = function (context, arr) {
     for (var i = 0; i < arr.length; i++) {
       args.push('arr[' + i + ']')
     }
-    result = eval(context.fn('' + args + '')) // 执行函数
+    result = eval('context.fn(' + args + ')') // 执行函数
   }
   delete context.fn
   return result
 }
 // es6
-Function.prototype.apply1 = function (context, arr) {
+Function.prototype.apply2 = function (context, arr) {
   context = context || window // 获取目标绑定对象
   context.fn = this // 执行函数
   let result
@@ -141,7 +141,7 @@ Function.prototype.bind1 = function (context) {
   // 保存第一层参数
   var args = Array.prototype.slice.call(arguments, 1) // arguments 是类数组，需要通过 Array.prototype.slice.call 获取函数参数
 
-  var noopFn = function () {} // 空函数，用于修改返回的执行函数的 prototype
+  var noopFn = function () {} // 空函数，用于修改返回的执行函数 boundFn 的 prototype
   var boundFn = function () {
     // 返回的函数
     // 获取第二层参数
@@ -152,7 +152,7 @@ Function.prototype.bind1 = function (context) {
     )
   }
 
-  // 修改 boundFn 绑定函数的 prototype 为执行函数的 prototype
+  // 修改修改返回的执行函数 boundFn 的 prototype 为执行函数的 prototype
   // 这样实例就可以继承绑定函数原型的属性和方法
   noopFn.prototype = this.prototype
   boundFn.prototype = new noopFn()
