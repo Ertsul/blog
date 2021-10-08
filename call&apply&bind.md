@@ -152,7 +152,7 @@ Function.prototype.bind1 = function (context) {
     )
   }
 
-  // 修改修改返回的执行函数 boundFn 的 prototype 为执行函数的 prototype
+  // 修改返回的执行函数 boundFn 的 prototype 为执行函数的 prototype
   // 这样实例就可以继承绑定函数原型的属性和方法
   noopFn.prototype = this.prototype
   boundFn.prototype = new noopFn()
