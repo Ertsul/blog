@@ -145,7 +145,7 @@ Function.prototype.bind1 = function (context) {
   var boundFn = function () {
     // 返回的函数
     // 获取第二层参数
-    var boundArgs = Array.prototype.slice.call(arguments, 1)
+    var boundArgs = Array.prototype.slice.call(arguments)
     return self.apply(
       this instanceof noopFn ? this : context, // 判断是否为实例化对象
       args.concat(boundArgs)
