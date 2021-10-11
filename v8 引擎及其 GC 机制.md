@@ -11,6 +11,8 @@ javascript 引擎：主要负责 javascript 的解析。如：v8 引擎。
 - 64位系统：1.4G
 - 32位系统：0.7G
 
+由于存储空间有限，如果不进行 GC 的话，会造成内存空间不够用的情况。
+
 ### v8 内存结构
 
 <img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/12/8/16ee12280b78399d~tplv-t2oaga2asx-watermark.awebp" alt="v8 内存结构 - 网络图片" style="zoom:67%;" />
