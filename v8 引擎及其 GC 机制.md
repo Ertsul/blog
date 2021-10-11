@@ -4,7 +4,7 @@
 
 javascript 引擎：主要负责 javascript 的解析。如：v8 引擎。
 
-![内核引擎对应图 - 来源网络](https://segmentfault.com/img/bV5zow?w=888&h=936/view)
+<img src="https://segmentfault.com/img/bV5zow" alt="内核引擎对应图 - 来源网络" style="zoom: 67%;" />
 
 ### v8 存储大小
 
@@ -13,7 +13,7 @@ javascript 引擎：主要负责 javascript 的解析。如：v8 引擎。
 
 ### v8 内存结构
 
-![v8 内存结构 - 网络图片](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/12/8/16ee12280b78399d~tplv-t2oaga2asx-watermark.awebp)
+<img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/12/8/16ee12280b78399d~tplv-t2oaga2asx-watermark.awebp" alt="v8 内存结构 - 网络图片" style="zoom:67%;" />
 
 - 新生代区：大多数对象一开始都分配在这里，区域较小，垃圾回收频繁。
   - from-space：分配内存。
