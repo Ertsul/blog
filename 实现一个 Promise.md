@@ -197,8 +197,12 @@ class MyPromise {
     }
     
     then(onFulfilled, onRejected) {
+        onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value
+        onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }
+        
         switch(this.status) {
             case PENDING:
+                // resolve 或者 reject 在异步函数中调用，需要缓存起来
             	this.onFulfilledCallbacks.push(onFulfilled)
             	this.onRejectedCallbacks.push(onRejected)
             	break;
@@ -240,3 +244,300 @@ p1.then(res => {
 })
 // then1 then2
 ```
+
+#### then 链式调用
+
+then 链式调用实际是在 then 函数内部又返回一个新的 Promise，通过对上一个 then 返回值的判断，将值穿透到下一个 then 中。
+
+修改 then 方法：
+
+```js
+// ...
+
+class MyPromise {
+	// ...
+    
+    then(onFulfilled, onRejected) {
+        onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value
+        onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }
+
+        const p2 = new MyPromise((resolve, reject) => {
+            // 封装上一个 then 的 onFulfilled
+            const fulfilled = () => {
+                queueMicrotask(() => {
+                    // 放入微任务，不然 p2 还未完成初始化
+                    const x = onFulfilled(this.value)
+                    resolvePromise(p2, x, resolve, reject)
+                })
+            }
+            // 封装上一个 then 的 onRejected
+            const rejected = () => {
+                queueMicrotask(() => {
+                    // 放入微任务，不然 p2 还未完成初始化
+                    const x = onRejected(this.reason)
+                    resolvePromise(p2, x, resolve, reject)
+                })
+            }
+
+            switch (this.status) {
+                case PENDING:
+                    // resolve 或者 reject 在异步函数中调用，需要缓存起来
+                    this.onFulfilledCallbacks.push(fulfilled)
+                    this.onRejectedCallbacks.push(rejected)
+                    break;
+                case FULFILLED:
+                    fulfilled()
+                    break;
+                case REJECTED:
+                    rejected()
+                    break;
+                default:
+                    break;
+            }
+        })
+
+        return p2
+    }
+}
+
+
+// 该函数用于获取上一个 then 的返回值，并更改新 MyPromise 的状态
+function resolvePromise(p2, x, resolve, reject) {
+    // 判断返回值是否为自身，防止循环调用
+    if (p2 === x) {
+        throw new Error('cycle promise call')
+    }
+    
+    if (typeof x === 'function' || typeof x === 'object') {
+        if (x === null) {
+            return resolve(x)
+        }
+        
+        // 获取 then 函数
+        let then
+        try {
+          then = x.then  
+        } catch {
+          reject(err)
+        }
+        
+        // then 是一个函数
+        if (typeof then === 'function') {
+            let called = false // 是否调用标志，防止重复调用
+            try {
+                then.call(x, res => {
+                    if(called) return
+                    called = true
+                    resolvePromise(p2, res, resolve, reject)
+                }, err => {
+                    if(called) return
+                    called = true
+                    reject(err)
+                })
+            } catch {
+                if(called) return
+                called = true
+                reject(err)
+            }
+        } else{
+            // 对象，直接执行
+            resolve(x)
+        }
+    } else {
+        // 普通值，直接 resolve，变更 p2 的状态
+        resolve(x)
+    }
+}
+```
+
+执行代码，测试链式调用：
+
+```js
+const p = new MyPromise((resolve, reject) => {
+    setTimeout(() => {
+        resolve('aa')
+    }, 0);
+})
+p.then(res => {
+    console.log('then1', res);
+    return 'bb'
+}).then(res => {
+    console.log('then2', res);
+    return new MyPromise((resolve, reject) => {
+        resolve('cc')
+    })
+}).then(res => {
+    console.log('then3', res);
+})
+// then1 aa
+// then2 bb
+// then3 cc
+```
+
+执行代码，测试返回值为自身：
+
+```js
+const promise = new MyPromise((resolve, reject) => {
+    resolve('success')
+})
+
+const p1 = promise.then(value => {
+    console.log(1)
+    return p1
+})
+
+// 运行的时候会走reject
+p1.then(value => {
+    console.log(2)
+}, reason => {
+    console.log(3)
+})
+// 1
+//  cycle promise call
+```
+
+#### 完善代码，添加 try/catch
+
+```js
+// 实现
+const PENDING = 'pending'
+const FULFILLED = 'fulfilled'
+const REJECTED = 'rejected'
+
+class MyPromise {
+    constructor(executor) {
+        try {
+            executor(this.resolve, this.reject)
+        } catch (error) {
+            this.reject(error)
+        }
+    }
+
+    status = PENDING
+value = null // 执行成功返回值
+onFulfilledCallbacks = [] // 成功状态：回调函数缓存队列
+reason = null // 执行失败原因
+onRejectedCallbacks = [] // 失败状态：回调函数缓存队列
+
+resolve = (value) => {
+    if (this.status === PENDING) {
+        // 状态变更
+        this.status = FULFILLED
+        this.value = value
+        // 执行缓存队列中的函数
+        while (this.onFulfilledCallbacks.length) {
+            this.onFulfilledCallbacks.shift()(value)
+        }
+    }
+}
+reject = (reason) => {
+    if (this.status === PENDING) {
+        // 状态变更
+        this.status = REJECTED
+        this.reason = reason
+        // 执行缓存队列中的函数
+        while (this.onRejectedCallbacks.length) {
+            this.onRejectedCallbacks.shift()(reason)
+        }
+    }
+}
+
+then(onFulfilled, onRejected) {
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value
+    onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }
+
+    const p2 = new MyPromise((resolve, reject) => {
+        // 封装上一个 then 的 onFulfilled
+        const fulfilled = () => {
+            try {
+                queueMicrotask(() => {
+                    // 放入微任务，不然 p2 还未完成初始化
+                    const x = onFulfilled(this.value)
+                    resolvePromise(p2, x, resolve, reject)
+                })
+            } catch (error) {
+                reject(error)
+            }
+        }
+        // 封装上一个 then 的 onRejected
+        const rejected = () => {
+            try {
+                queueMicrotask(() => {
+                    // 放入微任务，不然 p2 还未完成初始化
+                    const x = onRejected(this.reason)
+                    resolvePromise(p2, x, resolve, reject)
+                })
+            } catch (error) {
+                reject(error)
+            }
+        }
+
+        switch (this.status) {
+            case PENDING:
+                // resolve 或者 reject 在异步函数中调用，需要缓存起来
+                this.onFulfilledCallbacks.push(fulfilled)
+                this.onRejectedCallbacks.push(rejected)
+                break;
+            case FULFILLED:
+                fulfilled()
+                break;
+            case REJECTED:
+                rejected()
+                break;
+            default:
+                break;
+        }
+    })
+
+    return p2
+}
+}
+
+function resolvePromise(p2, x, resolve, reject) {
+    // 判断返回值是否为自身，防止循环调用
+    if (p2 === x) {
+        throw new Error('cycle promise call')
+    }
+
+    if (typeof x === 'function' || typeof x === 'object') {
+        if (x === null) {
+            return resolve(x)
+        }
+
+        // 获取 then 函数
+        let then
+        try {
+            then = x.then
+        } catch (err) {
+            return reject(err)
+        }
+
+        // then 是一个函数
+        if (typeof then === 'function') {
+            let called = false // 是否调用标志，防止重复调用
+            try {
+                then.call(x, res => {
+                    if (called) return
+                    called = true
+                    resolvePromise(p2, res, resolve, reject)
+                }, err => {
+                    if (called) return
+                    called = true
+                    reject(err)
+                })
+            } catch {
+                if (called) return
+                called = true
+                reject(err)
+            }
+        } else {
+            // 对象，直接执行
+            resolve(x)
+        }
+    } else {
+        // 普通值，直接 resolve，变更 p2 的状态
+        resolve(x)
+    }
+}
+```
+
