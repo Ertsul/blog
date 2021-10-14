@@ -399,7 +399,7 @@ p1.then(value => {
 //  cycle promise call
 ```
 
-#### 完善代码，添加 try/catch
+#### 完善代码，添加 try/catch：
 
 ```js
 // 实现
