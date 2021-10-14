@@ -56,6 +56,7 @@ class MyPromise {
         executor()
     }
     
+    status = PENDING
     value = null // 执行成功返回值
 	onFulfilledCallbacks = [] // 成功状态：回调函数缓存队列
 	reason = null // 执行失败原因
@@ -83,6 +84,7 @@ class MyPromise {
         executor(this.resolve, this.reject)
     }
     
+    status = PENDING
     value = null // 执行成功返回值
 	onFulfilledCallbacks = [] // 成功状态：回调函数缓存队列
 	reason = null // 执行失败原因
@@ -118,6 +120,7 @@ class MyPromise {
         executor(this.resolve, this.reject)
     }
     
+    status = PENDING
     value = null // 执行成功返回值
 	onFulfilledCallbacks = [] // 成功状态：回调函数缓存队列
 	reason = null // 执行失败原因
