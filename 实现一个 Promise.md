@@ -140,7 +140,7 @@ class MyPromise {
             this.status = REJECTED
             this.reason = reason
             // 执行缓存队列中的函数
-            while(this.onFulfilledCallbacks.length) {
+            while(this.onRejectedCallbacks.length) {
 				this.onRejectedCallbacks.shift()(reason)
             }
         }
