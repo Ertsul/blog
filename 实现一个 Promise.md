@@ -417,83 +417,83 @@ class MyPromise {
     }
 
     status = PENDING
-value = null // 执行成功返回值
-onFulfilledCallbacks = [] // 成功状态：回调函数缓存队列
-reason = null // 执行失败原因
-onRejectedCallbacks = [] // 失败状态：回调函数缓存队列
+    value = null // 执行成功返回值
+    onFulfilledCallbacks = [] // 成功状态：回调函数缓存队列
+    reason = null // 执行失败原因
+    onRejectedCallbacks = [] // 失败状态：回调函数缓存队列
 
-resolve = (value) => {
-    if (this.status === PENDING) {
-        // 状态变更
-        this.status = FULFILLED
-        this.value = value
-        // 执行缓存队列中的函数
-        while (this.onFulfilledCallbacks.length) {
-            this.onFulfilledCallbacks.shift()(value)
-        }
-    }
-}
-reject = (reason) => {
-    if (this.status === PENDING) {
-        // 状态变更
-        this.status = REJECTED
-        this.reason = reason
-        // 执行缓存队列中的函数
-        while (this.onRejectedCallbacks.length) {
-            this.onRejectedCallbacks.shift()(reason)
-        }
-    }
-}
-
-then(onFulfilled, onRejected) {
-    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value
-    onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }
-
-    const p2 = new MyPromise((resolve, reject) => {
-        // 封装上一个 then 的 onFulfilled
-        const fulfilled = () => {
-            try {
-                queueMicrotask(() => {
-                    // 放入微任务，不然 p2 还未完成初始化
-                    const x = onFulfilled(this.value)
-                    resolvePromise(p2, x, resolve, reject)
-                })
-            } catch (error) {
-                reject(error)
+    resolve = (value) => {
+        if (this.status === PENDING) {
+            // 状态变更
+            this.status = FULFILLED
+            this.value = value
+            // 执行缓存队列中的函数
+            while (this.onFulfilledCallbacks.length) {
+                this.onFulfilledCallbacks.shift()(value)
             }
         }
-        // 封装上一个 then 的 onRejected
-        const rejected = () => {
-            try {
-                queueMicrotask(() => {
-                    // 放入微任务，不然 p2 还未完成初始化
-                    const x = onRejected(this.reason)
-                    resolvePromise(p2, x, resolve, reject)
-                })
-            } catch (error) {
-                reject(error)
+    }
+    reject = (reason) => {
+        if (this.status === PENDING) {
+            // 状态变更
+            this.status = REJECTED
+            this.reason = reason
+            // 执行缓存队列中的函数
+            while (this.onRejectedCallbacks.length) {
+                this.onRejectedCallbacks.shift()(reason)
             }
         }
+    }
 
-        switch (this.status) {
-            case PENDING:
-                // resolve 或者 reject 在异步函数中调用，需要缓存起来
-                this.onFulfilledCallbacks.push(fulfilled)
-                this.onRejectedCallbacks.push(rejected)
-                break;
-            case FULFILLED:
-                fulfilled()
-                break;
-            case REJECTED:
-                rejected()
-                break;
-            default:
-                break;
-        }
-    })
+    then(onFulfilled, onRejected) {
+        onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value
+        onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }
 
-    return p2
-}
+        const p2 = new MyPromise((resolve, reject) => {
+            // 封装上一个 then 的 onFulfilled
+            const fulfilled = () => {
+                try {
+                    queueMicrotask(() => {
+                        // 放入微任务，不然 p2 还未完成初始化
+                        const x = onFulfilled(this.value)
+                        resolvePromise(p2, x, resolve, reject)
+                    })
+                } catch (error) {
+                    reject(error)
+                }
+            }
+            // 封装上一个 then 的 onRejected
+            const rejected = () => {
+                try {
+                    queueMicrotask(() => {
+                        // 放入微任务，不然 p2 还未完成初始化
+                        const x = onRejected(this.reason)
+                        resolvePromise(p2, x, resolve, reject)
+                    })
+                } catch (error) {
+                    reject(error)
+                }
+            }
+
+            switch (this.status) {
+                case PENDING:
+                    // resolve 或者 reject 在异步函数中调用，需要缓存起来
+                    this.onFulfilledCallbacks.push(fulfilled)
+                    this.onRejectedCallbacks.push(rejected)
+                    break;
+                case FULFILLED:
+                    fulfilled()
+                    break;
+                case REJECTED:
+                    rejected()
+                    break;
+                default:
+                    break;
+            }
+        })
+
+        return p2
+    }
 }
 
 function resolvePromise(p2, x, resolve, reject) {
