@@ -11,3 +11,4 @@
   - project/inject
 - 插件机制 use
 - [extends](https://cn.vuejs.org/v2/api/?#extends) 
+- slot 插槽机制
