@@ -47,3 +47,4 @@ module.exports = Vue;
 #### initGlobalAPI
 
 直接往 Vue 上挂载初始化全局 API 静态方法（非原型上挂载），可通过 Vue 直接调用：`set`、`delete`、`nextTick``、observable`、`use`、`mixin`、`component`、`directive`、`filter`。
+
