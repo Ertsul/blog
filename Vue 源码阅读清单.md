@@ -1,0 +1,11 @@
+- vue 模块引入
+- 初始化 Vue 实例
+- Vue 实例 $mount 挂载
+- 双向数据绑定
+- diff
+- options 作用及实现：
+  - data
+  - props
+  - computed
+  - watch
+  - project/inject
