@@ -1,14 +1,12 @@
-## 实例化 Vue 对象并挂载
+## 实例化 Vue 对象
 
 ```js
 new Vue({
   render: h => h(App)
-}).$mount('#app')
+})
 ```
 
-### 实例化 Vue
-
-判断是否是 Vue 的实例，是的话则执行初始化方法`_init`。
+判断是否是 Vue 的实例，是的话则执行初始化方法`_init`。源码如下：
 
 ```js
 function Vue(options) {
@@ -27,7 +25,7 @@ function initMixin(Vue) {
     Vue.prototype._init = function (options) {
         // 合并 options
         if (options && options._isComponent) {
-      		// 优化内部组件实例化，因为动态选项合并非常慢，而且内部组件选项不需要特殊处理。
+      	  // 优化内部组件实例化，因为动态选项合并非常慢，而且内部组件选项不需要特殊处理。
           initInternalComponent(vm, options);
         } else {
           vm.$options = mergeOptions(
@@ -53,7 +51,7 @@ function initMixin(Vue) {
 }
 ```
 
-主要 Vue 原型上挂载出实例初始化方法`_init`，该方法主要执行：
+主要执行 Vue 原型上挂载的实例初始化方法`_init`。该方法主要执行：
 
 1. 合并传入 Vue 构造函数的 options，主要合并父级 options 和默认 options;
 2. 初始化生命周期 initLifecycle；
@@ -66,7 +64,7 @@ function initMixin(Vue) {
 9. 调用生命周期钩子 created；
 10. 执行 $mount 挂载 Vue 实例。
 
-##### 思考一：为什么要在 initState 初始化之前初始化 injections？而在 initState 初始化之后初始化 provide？
+#### 思考一：为什么要在 initState 初始化之前初始化 injections？而在 initState 初始化之后初始化 provide？
 
 - 因为 provide 可能会用到 props/data 中的数据，故需要在 data\props 初始化之后；
 - 因为 inject 中的数据会处理成 data，故需要先获取 inject 数据再处理 data\props。
