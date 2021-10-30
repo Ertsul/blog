@@ -429,7 +429,7 @@ function createChildren (vnode, children, insertedVnodeQueue) {
 }
 ```
 
-每个 VNode 都有一个 children 属性，用于包裹子元素节点。createChildren 函数通过判断 children 是否是数组列表，是的话次深度优先遍历递归调用 createElm 方法创建 DOM 节点。
+每个 VNode 都有一个 children 属性，用于包裹子元素节点。createChildren 函数通过判断 children 是否是数组列表，是的话通过深度优先遍历递归调用 createElm 方法创建 DOM 节点。
 
 接着调用 invokeCreateHooks 执行所有的 VNode create 钩子，并将 VNode push 到 insertedVnodeQueue 中。invokeCreateHooks 函数源码如下：
 
@@ -461,4 +461,3 @@ function insert (parent, elm, ref$$1) {
     }
 }
 ```
-
