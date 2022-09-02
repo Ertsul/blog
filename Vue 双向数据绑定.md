@@ -2,7 +2,7 @@
 
 ### 原理
 
- *Vue* 的双向数据绑定是使用**发布订阅者模式**、**数据劫持**和`Object.defineProperty()`（*Vue 3.0* 改用 *Proxy*）实现。核心原理如下图所示：
+ *Vue* 的双向数据绑定是使用**发布订阅者模式**、**数据劫持**和`Object.defineProperty()`（ Vue 3.0  改用 Proxy）实现。核心原理如下图所示：
 
 ![image.png](https://upload-images.jianshu.io/upload_images/659084-587c891bf6c3f81e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
@@ -19,14 +19,14 @@
 
 ```javascript
 function observe(obj) {
-    // 过滤不是对象的值
-    if(!obj || Object.prototype.toString.call(obj) !== '[object Object]') {
-    	return;   
-    }
-    // 遍历对象的属性
-    Object.keys(obj).forEach(key => {
-        defineReative(obj, key, obj[key]); //  调用 defineReative 函数设置 getter 和 setter
-    })
+  // 过滤不是对象的值
+  if(!obj || Object.prototype.toString.call(obj) !== '[object Object]') {
+    return;   
+  }
+  // 遍历对象的属性
+  Object.keys(obj).forEach(key => {
+    defineReative(obj, key, obj[key]); //  调用 defineReative 函数设置 getter 和 setter
+  })
 }
 ```
 
@@ -34,22 +34,22 @@ function observe(obj) {
 
 ```javascript
 function defineReative(obj, key, val) {
-    observe(val); // 递归
-    let dp = new Dep(); // 实例化一个依赖收集对象，用于添加订阅者到订阅者列表和通知订阅者更新
-    Object.defineProperty(obj, key, {
-        configurable: true,
-        enumerable: true,
-        get: function() {
-            if (Dep.target) { // 添加订阅者时候会将全局 Dep.target 指向 Watcher 自己，会触发 getter
-                dp.addSub(Dep.target);
-            }
-            return val;
-        },
-        set: function(newVal) {
-            val = newVal;
-            dp.notify(); // 通知所有的订阅者
-        }
-    })
+  observe(val); // 递归
+  let dp = new Dep(); // 实例化一个依赖收集对象，用于添加订阅者到订阅者列表和通知订阅者更新
+  Object.defineProperty(obj, key, {
+    configurable: true,
+    enumerable: true,
+    get: function() {
+      if (Dep.target) { // 添加订阅者时候会将全局 Dep.target 指向 Watcher 自己，会触发 getter
+        dp.addSub(Dep.target);
+      }
+      return val;
+    },
+    set: function(newVal) {
+      val = newVal;
+      dp.notify(); // 通知所有的订阅者
+    }
+  })
 }
 ```
 
@@ -59,17 +59,17 @@ function defineReative(obj, key, val) {
 
 ```javascript
 class Dep {
-    constructor() {
-        this.subs = [];
-    }
-    addSub(sub) {
-        this.subs.push(sub);
-    }
-    notify() {
-        this.subs.forEach(sub => {
-            sub.update(); // sub 指向 Watcher 实例
-        })
-    }
+  constructor() {
+    this.subs = [];
+  }
+  addSub(sub) {
+    this.subs.push(sub);
+  }
+  notify() {
+    this.subs.forEach(sub => {
+      sub.update(); // sub 指向 Watcher 实例
+    })
+  }
 }
 ```
 
@@ -81,17 +81,17 @@ class Dep {
 
 ```javascript
 class Watcher{
-    constructor(obj, key, cb) {
-        Dep.target = this; // 改变全局 Dep.target，指向自身
-        this.obj = obj;
-        this.key = key;
-        this.value = obj[key]; // 触发 getter 操作，并添加到订阅者列表
-        Dep.target = null; // 重新将 Dep.target 置为 null
-    }
-    update() {
-        const value = this.obj[this.key]; // 获取最新值
-        this.cb(value); // 通过回调更新 DOM 节点内容
-    }
+  constructor(obj, key, cb) {
+    Dep.target = this; // 改变全局 Dep.target，指向自身
+    this.obj = obj;
+    this.key = key;
+    this.value = obj[key]; // 触发 getter 操作，并添加到订阅者列表
+    Dep.target = null; // 重新将 Dep.target 置为 null
+  }
+  update() {
+    const value = this.obj[this.key]; // 获取最新值
+    this.cb(value); // 通过回调更新 DOM 节点内容
+  }
 }
 ```
 
