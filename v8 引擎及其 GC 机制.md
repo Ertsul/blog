@@ -50,11 +50,11 @@ javascript 引擎：主要负责 javascript 的解析。如：v8 引擎。
 
 ```js
 function fn() {
-    const a = {}
-    const b = {}
-    // a 对象和 b 对象循环引用
-    a.x = b
-    b.xx = a
+  const a = {}
+  const b = {}
+  // a 对象和 b 对象循环引用
+  a.x = b
+  b.xx = a
 }
 ```
 
